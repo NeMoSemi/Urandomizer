@@ -1,4 +1,5 @@
 import json
+import re
 import sys
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
@@ -31,6 +32,8 @@ class MyWidget(QMainWindow):
         self.select_b.clicked.connect(self.select)
         self.add_window_b.clicked.connect(self.add_window)
         self.minus_b.clicked.connect(self.minus_theme_b)
+        self.plus_b.clicked.connect(self.plus_theme_b)
+        self.save_b.clicked.connect(self.save_submit)
         self.klass_box.activated.connect(self.chage_klass)
         self.type_box.activated.connect(self.type_edit)
         self.klass_box_edit.activated.connect(self.chage_klass_edit)
@@ -107,9 +110,9 @@ class MyWidget(QMainWindow):
             #    self.theme_box.clear()
 
     def type_edit(self):
-        #self.submit('Сохранить изменения?', 'Поле "Тема" было изменено',
-         #           f'{self.current_theme} -> {self.theme_edit.text()}', self.different_themes,
-         #           self.theme_edit.text() != self.current_theme)
+        self.submit('Сохранить изменения?', 'Поле "Тема" было изменено',
+                    f'{self.current_theme} -> {self.theme_edit.text()}', self.different_themes,
+                    self.theme_edit.text() != self.current_theme)
         self.theme_box_edit.clear()
         self.klass_box_edit.clear()
         self.main_text_edit.clear()
@@ -122,8 +125,19 @@ class MyWidget(QMainWindow):
                     for theme in text[keys]:
                         self.theme_box_edit.addItem(theme)
                     first_theme = False
-                    self.theme_change_edit()
+                    #####################
+                    #self.theme_change_edit()
+                    self.theme_edit.setText(self.theme_box_edit.currentText())
+                    self.current_theme = self.theme_box_edit.currentText()
+                    with open(self.files[self.current_type.lower()], mode="r", encoding="utf-8") as file:
+                        text = json.load(file)
+                        self.main_text_edit.clear()
+                        for obj in text[self.klass_box_edit.currentText()][self.theme_box_edit.currentText()]:
+                            self.main_text_edit.append(f'{obj}')
+                    ########################
             self.current_type = self.type_box.currentText().lower()
+            self.current_theme = self.theme_box_edit.currentText()
+            self.current_klass = self.klass_box_edit.currentText()
 
     def chage_klass_edit(self):
         with open(self.files[self.type_box.currentText().lower()], mode="r", encoding="utf-8") as file:
@@ -159,7 +173,7 @@ class MyWidget(QMainWindow):
 
     def different_themes(self, btn):
         if btn.text().lower() == 'ok':
-            with open(self.files[self.type_box.currentText().lower()], mode="r", encoding="utf-8") as file:
+            with open(self.files[self.current_type.lower()], mode="r", encoding="utf-8") as file:
                 text = json.load(file)
                 text[self.current_klass][self.theme_edit.text()] = text[self.current_klass][self.current_theme]
                 del text[self.current_klass][self.current_theme]
@@ -167,7 +181,7 @@ class MyWidget(QMainWindow):
                 for theme in text[self.current_klass]:
                     self.theme_box_edit.addItem(theme)
                 self.theme_edit.setText(self.theme_box_edit.currentText())
-                with open(self.files[self.type_box.currentText().lower()], mode="w", encoding="utf-8") as f:
+                with open(self.files[self.current_type.lower()], mode="w", encoding="utf-8") as f:
                     json.dump(text, f, indent=4, ensure_ascii=False)
 
     def add_window(self):
@@ -225,7 +239,57 @@ class MyWidget(QMainWindow):
                 self.theme_edit.setText(self.theme_box_edit.currentText())
                 with open(self.files[self.type_box.currentText().lower()], mode="w", encoding="utf-8") as f:
                     json.dump(text, f, indent=4, ensure_ascii=False)
+            self.back()
 
+    def plus_theme_b(self):
+        theme_name, ok_pressed = QInputDialog.getText(self, "Добавить тему", "Введите название темы:")
+        if ok_pressed:
+            with open(self.files[self.type_box.currentText().lower()], mode="r", encoding="utf-8") as file:
+                text = json.load(file)
+                if theme_name in text[self.klass_box_edit.currentText()]:
+                    submit = QMessageBox()
+                    submit.setWindowTitle('Ошибка')
+                    submit.setText('Такая тема уже существует!')
+                    submit.setIcon(QMessageBox.Information)
+                    submit.setStandardButtons(QMessageBox.Ok)
+                    submit.setDefaultButton(QMessageBox.Ok)
+                    submit.setInformativeText('Выберите другое не занятое название')
+                    submit.setDetailedText('Детали')
+                    submit.setDetailedText(f'{theme_name} -> already exists')
+
+                    submit.exec_()
+                else:
+                    text[self.klass_box_edit.currentText()][theme_name] = []
+                    with open(self.files[self.type_box.currentText().lower()], mode="w", encoding="utf-8") as f:
+                        json.dump(text, f, indent=4, ensure_ascii=False)
+                    self.theme_box_edit.clear()
+                    for theme in text[self.klass_box_edit.currentText()]:
+                        self.theme_box_edit.addItem(theme)
+                    self.theme_edit.setText(self.theme_box_edit.currentText())
+
+    def save_submit(self):
+        self.submit('Сохранить изменения?', 'Текущие изменения будут сохранены', 'items -> update', self.save_text)
+
+    def save_text(self, btn):
+        if btn.text().lower() == 'ok':
+            themes = self.main_text_edit.toPlainText().split('\n')
+            del_elements = []
+            for i in themes:
+                if re.sub('\s+', '', i.strip()) == '': del_elements.append(i)
+            for i in del_elements:
+                themes.remove(i)
+            with open(self.files[self.type_box.currentText().lower()], mode="r", encoding="utf-8") as file:
+                text = json.load(file)
+                #
+                if self.theme_edit.text() != self.current_theme:
+                    print(self.theme_edit.text(), self.current_theme)
+                    text[self.current_klass][self.theme_edit.text()] = text[self.current_klass][self.current_theme]
+                    del text[self.current_klass][self.current_theme]
+                #
+                text[self.klass_box_edit.currentText()][self.theme_edit.text()] = themes
+                with open(self.files[self.type_box.currentText().lower()], mode="w", encoding="utf-8") as f:
+                    json.dump(text, f, indent=4, ensure_ascii=False)
+            self.back()
 
 
 app = QApplication(sys.argv)
