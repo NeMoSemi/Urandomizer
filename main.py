@@ -6,13 +6,17 @@ from PyQt5.QtCore import Qt
 from PyQt5 import QtCore, QtMultimedia
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QInputDialog, QDialog
+from main_window import *
 import random
 
 
-class MyWidget(QMainWindow):
+class MyWidget(QMainWindow, Ui_Urandomizer):
     def __init__(self):
-        super().__init__()
-        uic.loadUi('data/ui/main.ui', self)
+        super(MyWidget, self).__init__()
+        #self.ui = Ui_Urandomizer()
+        self.setupUi(self)
+        #super().__init__()
+        #uic.loadUi('data/ui/main.ui', self)
         self.files = {'даты': 'data/json/dates.json', 'определения': 'data/json/definitions.json',
                       'имена': 'data/json/names.json'}
         self.state = None
@@ -66,7 +70,7 @@ class MyWidget(QMainWindow):
         self.form_answer.setText(self.sender().text())
         self.state = self.files[self.sender().text().lower()]
         self.text_field.clear()
-        self.theme_box.clear()
+        self.theme_box_tool_menu.clear()
         self.klass_box.clear()
         for i in self.answer: i.show()
         for i in reversed(range(self.Main_layout.count())):
@@ -78,34 +82,55 @@ class MyWidget(QMainWindow):
             for keys in text:
                 self.klass_box.addItem(keys)
                 if first_theme:
+                    font = self.theme_box_tool_menu.font()
+                    font.setPointSize(30)
+                    self.theme_box_tool_menu.setFont(font)
                     for theme in text[keys]:
-                        self.theme_box.addItem(theme)
+                        action = self.theme_box_tool_menu.addAction(theme)
+                        action.setFont(font)
+                        action.setCheckable(True)
+                        #self.theme_box.addItem(theme)
+                    self.theme_box.setMenu(self.theme_box_tool_menu)
+                    self.theme_box.setPopupMode(QtWidgets.QToolButton.InstantPopup)
                     first_theme = False
 
     def get_number(self):
         self.random_number.setText(str(random.randint(1, self.spinbox.value())))
 
     def select(self):
-        if len(self.klass_box.currentText()) != 0 and len(self.theme_box.currentText()) != 0:
+        sp = []
+        for i in self.theme_box_tool_menu.actions():
+            if i.isChecked(): sp.append(i.text())
+        if len(self.klass_box.currentText()) != 0 and len(sp) != 0:
             self.text_field.clear()
             with open(self.state, mode="r", encoding="utf-8") as file:
                 text = json.load(file)
-                #text[self.klass_box.currentText()][self.theme_box.currentText()]
+                items = []
+                for i in sp:
+                    items += text[self.klass_box.currentText()][i]
                 count = 1
-                len_questions = self.count_d.value()
-                if self.count_d.value() > len(text[self.klass_box.currentText()][self.theme_box.currentText()]):
-                    len_questions = len(text[self.klass_box.currentText()][self.theme_box.currentText()])
-                for obj in random.sample(text[self.klass_box.currentText()][self.theme_box.currentText()],
-                                         len_questions):
+                count_questions = self.count_d.value()
+                if self.count_d.value() > len(items):
+                    count_questions = len(items)
+                for obj in random.sample(items, count_questions):
                     self.text_field.append(f'{str(count)}.{obj}')
                     count += 1
 
     def chage_klass(self):
         with open(self.state, mode="r", encoding="utf-8") as file:
             text = json.load(file)
-            self.theme_box.clear()
+            self.theme_box_tool_menu.clear()
+            font = self.theme_box_tool_menu.font()
+            font.setPointSize(30)
+            self.theme_box_tool_menu.setFont(font)
             for theme in text[str(self.klass_box.currentText())]:
-                self.theme_box.addItem(theme)
+                action = self.theme_box_tool_menu.addAction(theme)
+                action.setFont(font)
+                action.setCheckable(True)
+                # self.theme_box.addItem(theme)
+            self.theme_box.setMenu(self.theme_box_tool_menu)
+            self.theme_box.setPopupMode(QtWidgets.QToolButton.InstantPopup)
+            #self.theme_box.addItem(theme)
             #if text[str(self.klass_box.currentText())] == {}:
             #    self.theme_box.clear()
 
