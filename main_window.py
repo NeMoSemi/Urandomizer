@@ -394,7 +394,7 @@ class Ui_Urandomizer(object):
         self.definitions_b.setText(_translate("Urandomizer", "Определения"))
         self.names_b.setText(_translate("Urandomizer", "Имена"))
         self.get_number_b.setText(_translate("Urandomizer", "Выбрать число"))
-        self.back_b.setText(_translate("Urandomizer", " ⇦    "))
+        self.back_b.setText(_translate("Urandomizer", "↩"))
         self.random_number.setText(_translate("Urandomizer", "0"))
         self.digits_label.setText(_translate("Urandomizer", "Выбирать до номера"))
         self.count_l.setText(_translate("Urandomizer", "Кол-во"))
@@ -423,6 +423,7 @@ class Ui_Urandomizer(object):
         self.klass_label_edit.setText(_translate("Urandomizer", "Класс"))
         self.theme_label_edit.setText(_translate("Urandomizer", "Тема"))
         self.add_window_b.setText(_translate("Urandomizer", "+"))
+
 
 
 if __name__ == "__main__":

@@ -1,13 +1,10 @@
 import json
 import re
-import sys
-from PyQt5 import uic
-from PyQt5.QtCore import Qt
-from PyQt5 import QtCore, QtMultimedia
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QInputDialog, QDialog
+import sys, os
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox, QInputDialog
 from main_window import *
 import random
+
 
 
 class MyWidget(QMainWindow, Ui_Urandomizer):
@@ -24,8 +21,6 @@ class MyWidget(QMainWindow, Ui_Urandomizer):
         self.current_theme = None
         self.current_type = None
 
-        #self.noteEdit.appendPlainText(((('-' * 104) + '\n') * 8)) #первичное заполнение поля с нотами
-        #self.ButtonSpeed.clicked.connect(self.speeds)
 
         self.number_b.clicked.connect(self.number_window)
         self.dates_b.clicked.connect(self.answer)
@@ -317,7 +312,9 @@ class MyWidget(QMainWindow, Ui_Urandomizer):
             self.back()
 
 
-app = QApplication(sys.argv)
-ex = MyWidget()
-ex.show()
-sys.exit(app.exec_())
+#pyinstaller.exe --onefile --windowed main.py
+if __name__ == "__main__":
+    apps = QApplication(sys.argv)
+    ex = MyWidget()
+    ex.show()
+    sys.exit(apps.exec_())

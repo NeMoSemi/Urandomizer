@@ -5,7 +5,8 @@ class Dialog_01(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
         self.toolbutton = QtWidgets.QToolButton(self)
-        self.toolbutton.setText('Categories ')
+        self.toolbutton.setText('Темы')
+        self.toolbutton.setGeometry(0, 0, 100, 100)
         self.toolmenu = QtWidgets.QMenu(self)
         for i in range(3):
             action = self.toolmenu.addAction('Category %s' % i)
