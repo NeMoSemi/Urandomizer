@@ -17,9 +17,6 @@ class MyWidget(QMainWindow, Ui_Urandomizer):
         self.files = {'даты': 'data/json/dates.json', 'определения': 'data/json/definitions.json',
                       'имена': 'data/json/names.json'}
         self.state = None
-        self.current_klass = None
-        self.current_theme = None
-        self.current_type = None
 
 
         self.number_b.clicked.connect(self.number_window)
@@ -130,9 +127,8 @@ class MyWidget(QMainWindow, Ui_Urandomizer):
             #    self.theme_box.clear()
 
     def type_edit(self):
-        self.submit('Сохранить изменения?', 'Поле "Тема" было изменено',
-                    f'{self.current_theme} -> {self.theme_edit.text()}', self.different_themes,
-                    self.theme_edit.text() != self.current_theme)
+        print(12345)
+        print(self.type_box.currentText().lower())
         self.theme_box_edit.clear()
         self.klass_box_edit.clear()
         self.main_text_edit.clear()
@@ -148,24 +144,21 @@ class MyWidget(QMainWindow, Ui_Urandomizer):
                     #####################
                     #self.theme_change_edit()
                     self.theme_edit.setText(self.theme_box_edit.currentText())
-                    self.current_theme = self.theme_box_edit.currentText()
-                    with open(self.files[self.current_type.lower()], mode="r", encoding="utf-8") as file:
+                    ##################self.current_theme = self.theme_box_edit.currentText()
+                    with open(self.files[self.type_box.currentText().lower()], mode="r", encoding="utf-8") as file:
                         text = json.load(file)
                         self.main_text_edit.clear()
                         for obj in text[self.klass_box_edit.currentText()][self.theme_box_edit.currentText()]:
                             self.main_text_edit.append(f'{obj}')
                     ########################
-            self.current_type = self.type_box.currentText().lower()
-            self.current_theme = self.theme_box_edit.currentText()
-            self.current_klass = self.klass_box_edit.currentText()
+            # self.current_type = self.type_box.currentText().lower()
+            # self.current_theme = self.theme_box_edit.currentText()
+            # self.current_klass = self.klass_box_edit.currentText()
 
     def chage_klass_edit(self):
         with open(self.files[self.type_box.currentText().lower()], mode="r", encoding="utf-8") as file:
             text = json.load(file)
             #
-            self.submit('Сохранить изменения?', 'Поле "Тема" было изменено',
-                        f'{self.current_theme} -> {self.theme_edit.text()}', self.different_themes,
-                        self.theme_edit.text() != self.current_theme)
             self.theme_box_edit.clear()
             for theme in text[str(self.klass_box_edit.currentText())]:
                 self.theme_box_edit.addItem(theme)
@@ -175,34 +168,18 @@ class MyWidget(QMainWindow, Ui_Urandomizer):
             if len(text[self.klass_box_edit.currentText()]) > 0:
                 for obj in text[self.klass_box_edit.currentText()][self.theme_box_edit.currentText()]:
                     self.main_text_edit.append(f'{obj}')
-            self.current_theme = self.theme_box_edit.currentText()
-            self.current_klass = self.klass_box_edit.currentText()
+            # self.current_theme = self.theme_box_edit.currentText()
+            # self.current_klass = self.klass_box_edit.currentText()
 
 
     def theme_change_edit(self):
-        self.submit('Сохранить изменения?', 'Поле "Тема" было изменено',
-                    f'{self.current_theme} -> {self.theme_edit.text()}', self.different_themes,
-                    self.theme_edit.text() != self.current_theme)
         self.theme_edit.setText(self.theme_box_edit.currentText())
-        self.current_theme = self.theme_box_edit.currentText()
+        # self.current_theme = self.theme_box_edit.currentText()
         with open(self.files[self.type_box.currentText().lower()], mode="r", encoding="utf-8") as file:
             text = json.load(file)
             self.main_text_edit.clear()
             for obj in text[self.klass_box_edit.currentText()][self.theme_box_edit.currentText()]:
                 self.main_text_edit.append(f'{obj}')
-
-    def different_themes(self, btn):
-        if btn.text().lower() == 'ok':
-            with open(self.files[self.current_type.lower()], mode="r", encoding="utf-8") as file:
-                text = json.load(file)
-                text[self.current_klass][self.theme_edit.text()] = text[self.current_klass][self.current_theme]
-                del text[self.current_klass][self.current_theme]
-                self.theme_box_edit.clear()
-                for theme in text[self.current_klass]:
-                    self.theme_box_edit.addItem(theme)
-                self.theme_edit.setText(self.theme_box_edit.currentText())
-                with open(self.files[self.current_type.lower()], mode="w", encoding="utf-8") as f:
-                    json.dump(text, f, indent=4, ensure_ascii=False)
 
     def add_window(self):
         for i in self.add: i.show()
@@ -224,9 +201,9 @@ class MyWidget(QMainWindow, Ui_Urandomizer):
                     first_theme = False
                     for obj in text[keys][self.theme_box_edit.currentText()]:
                         self.main_text_edit.append(f'{obj}')
-            self.current_theme = self.theme_box_edit.currentText()
-            self.current_klass = self.klass_box_edit.currentText()
-            self.current_type = self.type_box.currentText().lower()
+            # self.current_theme = self.theme_box_edit.currentText()
+            # self.current_klass = self.klass_box_edit.currentText()
+            # self.current_type = self.type_box.currentText().lower()
 
     def submit(self, text, info, details, func, condition=True):
         if condition:
@@ -245,16 +222,17 @@ class MyWidget(QMainWindow, Ui_Urandomizer):
             submit.exec_()
 
     def minus_theme_b(self):
-        self.submit(f'Удалить тему {self.current_theme}?', 'Удалённые данные будет невозможно восстановить',
-                    f'{self.current_theme} -> Delite', self.delite_theme)
+        theme = self.theme_box_edit.currentText()
+        self.submit(f'Удалить тему {theme}?', 'Удалённые данные будет невозможно восстановить',
+                    f'{theme} -> Delite', self.delite_theme)
 
     def delite_theme(self, btn):
         if btn.text().lower() == 'ok':
             with open(self.files[self.type_box.currentText().lower()], mode="r", encoding="utf-8") as file:
                 text = json.load(file)
-                del text[self.current_klass][self.current_theme]
+                del text[self.klass_box_edit.currentText()][self.theme_box_edit.currentText()]
                 self.theme_box_edit.clear()
-                for theme in text[self.current_klass]:
+                for theme in text[self.klass_box_edit.currentText()]:
                     self.theme_box_edit.addItem(theme)
                 self.theme_edit.setText(self.theme_box_edit.currentText())
                 with open(self.files[self.type_box.currentText().lower()], mode="w", encoding="utf-8") as f:
@@ -301,10 +279,11 @@ class MyWidget(QMainWindow, Ui_Urandomizer):
             with open(self.files[self.type_box.currentText().lower()], mode="r", encoding="utf-8") as file:
                 text = json.load(file)
                 #
-                if self.theme_edit.text() != self.current_theme:
-                    print(self.theme_edit.text(), self.current_theme)
-                    text[self.current_klass][self.theme_edit.text()] = text[self.current_klass][self.current_theme]
-                    del text[self.current_klass][self.current_theme]
+                print(self.theme_edit.text())
+                # if self.theme_edit.text() != self.current_theme:
+                    # print(self.theme_edit.text(), self.current_theme)
+                    # text[self.current_klass][self.theme_edit.text()] = text[self.current_klass][self.current_theme]
+                    # del text[self.current_klass][self.current_theme]
                 #
                 text[self.klass_box_edit.currentText()][self.theme_edit.text()] = themes
                 with open(self.files[self.type_box.currentText().lower()], mode="w", encoding="utf-8") as f:
