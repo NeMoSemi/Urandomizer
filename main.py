@@ -33,6 +33,7 @@ class MyWidget(QMainWindow, Ui_MainWindow):
         self.pictures_b.clicked.connect(self.answer_pictures)
         self.select_map_b.clicked.connect(self.select_map)
         self.select_portrait_b.clicked.connect(self.select_portrait)
+        self.select_monument_b.clicked.connect(self.select_monument)
         self.portrait_klass_box.activated.connect(self.chage_portrait_klass)
 
         self.add_window_b.clicked.connect(self.add_window)
@@ -50,7 +51,8 @@ class MyWidget(QMainWindow, Ui_MainWindow):
         self.answer_pictures = [self.back_b, self.pictures_label, self.portrait_label, self.map_label,
                                 self.portrait_klass_label, self.map_klass_label, self.portrait_klass_box,
                                 self.map_klass_box, self.portrait_theme_label, self.portrait_theme_box,
-                                self.select_portrait_b, self.select_map_b, self.count_portrain]
+                                self.select_portrait_b, self.select_map_b, self.count_portrain, self.monument_label,
+                                self.monument_klass_label, self.monument_klass_box, self.select_monument_b]
         self.add = [self.klass_box_edit, self.klass_label_edit, self.main_text_edit, self.minus_b, self.plus_b,
                     self.save_b, self.theme_box_edit, self.theme_edit, self.theme_label_edit,
                     self.type_label, self.type_box, self.back_b]
@@ -111,6 +113,8 @@ class MyWidget(QMainWindow, Ui_MainWindow):
         self.add_window_b.hide()
         self.map_classes_list = sorted([int(i) for i in os.listdir('data/pictures/maps')], reverse=True)
         for klass in self.map_classes_list: self.map_klass_box.addItem(str(klass))
+        self.monument_classes_list = sorted([int(i) for i in os.listdir('data/pictures/monuments')], reverse=True)
+        for klass in self.monument_classes_list: self.monument_klass_box.addItem(str(klass))
         self.portrait_classes_list = sorted([int(i) for i in os.listdir('data/pictures/personality')], reverse=True)
         for klass in self.portrait_classes_list: self.portrait_klass_box.addItem(str(klass))
         self.portrait_theme_list = os.listdir(f'data/pictures/personality/{self.portrait_klass_box.currentText()}')
@@ -161,6 +165,11 @@ class MyWidget(QMainWindow, Ui_MainWindow):
             if len(map_list) != 0:
                 os.startfile(fr'data\pictures\maps\{self.map_klass_box.currentText()}\{random.choice(map_list)}')
 
+    def select_monument(self):
+        if len(self.map_klass_box.currentText()) != 0:
+            monument_list = os.listdir(f'data/pictures/monuments/{self.monument_klass_box.currentText()}')
+            if len(monument_list) != 0:
+                os.startfile(fr'data\pictures\monuments\{self.monument_klass_box.currentText()}\{random.choice(monument_list)}')
 
     def get_number(self):
         self.random_number.setText(str(random.randint(1, self.spinbox.value())))
@@ -214,7 +223,6 @@ class MyWidget(QMainWindow, Ui_MainWindow):
                     answer_text_list = vr_sp.copy()
             count = 1
             for item in answer_text_list:
-                print(item)
                 self.text_field.append(f'{str(count)}.{item}')
                 count += 1
 
@@ -236,7 +244,6 @@ class MyWidget(QMainWindow, Ui_MainWindow):
                 type[2].setPopupMode(QtWidgets.QToolButton.InstantPopup)
 
     def type_edit(self):
-        print(self.type_box.currentText().lower())
         self.theme_box_edit.clear()
         self.klass_box_edit.clear()
         self.main_text_edit.clear()
@@ -389,7 +396,6 @@ class MyWidget(QMainWindow, Ui_MainWindow):
             with open(self.files[self.type_box.currentText().lower()], mode="r", encoding="utf-8") as file:
                 text = json.load(file)
                 #
-                print(self.theme_edit.text())
                 # if self.theme_edit.text() != self.current_theme:
                     # print(self.theme_edit.text(), self.current_theme)
                     # text[self.current_klass][self.theme_edit.text()] = text[self.current_klass][self.current_theme]
