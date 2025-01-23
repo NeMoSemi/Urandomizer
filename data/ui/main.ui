@@ -888,7 +888,7 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>930</x>
       <y>460</y>
-      <width>321</width>
+      <width>231</width>
       <height>81</height>
      </rect>
     </property>
@@ -1211,7 +1211,7 @@ p, li { white-space: pre-wrap; }
      <rect>
       <x>510</x>
       <y>460</y>
-      <width>321</width>
+      <width>231</width>
       <height>81</height>
      </rect>
     </property>
@@ -1242,6 +1242,80 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="text">
      <string>Класс</string>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="count_monument">
+    <property name="geometry">
+     <rect>
+      <x>750</x>
+      <y>460</y>
+      <width>121</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>140</width>
+      <height>16777215</height>
+     </size>
+    </property>
+    <property name="font">
+     <font>
+      <family>Dutch801 Rm BT</family>
+      <pointsize>45</pointsize>
+     </font>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>20</number>
+    </property>
+   </widget>
+   <widget class="QSpinBox" name="count_map">
+    <property name="geometry">
+     <rect>
+      <x>1170</x>
+      <y>460</y>
+      <width>121</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>140</width>
+      <height>16777215</height>
+     </size>
+    </property>
+    <property name="font">
+     <font>
+      <family>Dutch801 Rm BT</family>
+      <pointsize>45</pointsize>
+     </font>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <property name="minimum">
+     <number>1</number>
+    </property>
+    <property name="maximum">
+     <number>20</number>
     </property>
    </widget>
   </widget>

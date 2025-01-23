@@ -52,7 +52,8 @@ class MyWidget(QMainWindow, Ui_MainWindow):
                                 self.portrait_klass_label, self.map_klass_label, self.portrait_klass_box,
                                 self.map_klass_box, self.portrait_theme_label, self.portrait_theme_box,
                                 self.select_portrait_b, self.select_map_b, self.count_portrain, self.monument_label,
-                                self.monument_klass_label, self.monument_klass_box, self.select_monument_b]
+                                self.monument_klass_label, self.monument_klass_box, self.select_monument_b,
+                                self.count_monument, self.count_map]
         self.add = [self.klass_box_edit, self.klass_label_edit, self.main_text_edit, self.minus_b, self.plus_b,
                     self.save_b, self.theme_box_edit, self.theme_edit, self.theme_label_edit,
                     self.type_label, self.type_box, self.back_b]
@@ -163,13 +164,23 @@ class MyWidget(QMainWindow, Ui_MainWindow):
         if len(self.map_klass_box.currentText()) != 0:
             map_list = os.listdir(f'data/pictures/maps/{self.map_klass_box.currentText()}')
             if len(map_list) != 0:
-                os.startfile(fr'data\pictures\maps\{self.map_klass_box.currentText()}\{random.choice(map_list)}')
+                if self.count_map.value() <= len(map_list):
+                    for map_path in random.sample(map_list, self.count_map.value()):
+                        os.startfile(fr'data\pictures\maps\{self.map_klass_box.currentText()}\{map_path}')
+                else:
+                    for map_path in map_list:
+                        os.startfile(fr'data\pictures\maps\{self.map_klass_box.currentText()}\{map_path}')
 
     def select_monument(self):
         if len(self.map_klass_box.currentText()) != 0:
             monument_list = os.listdir(f'data/pictures/monuments/{self.monument_klass_box.currentText()}')
             if len(monument_list) != 0:
-                os.startfile(fr'data\pictures\monuments\{self.monument_klass_box.currentText()}\{random.choice(monument_list)}')
+                if self.count_monument.value() <= len(monument_list):
+                    for monument_path in random.sample(monument_list, self.count_monument.value()):
+                        os.startfile(fr'data\pictures\monuments\{self.monument_klass_box.currentText()}\{monument_path}')
+                else:
+                    for monument_path in monument_list:
+                        os.startfile(fr'data\pictures\monuments\{self.monument_klass_box.currentText()}\{monument_path}')
 
     def get_number(self):
         self.random_number.setText(str(random.randint(1, self.spinbox.value())))
